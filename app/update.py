@@ -138,7 +138,7 @@ def _install_exe(rel: dict) -> dict:
     except OSError:
         old.rename(exe)           # put the working copy back
         raise
-    args = " ".join(a for a in sys.argv[1:] if re.fullmatch(r"--[a-z-]+", a))
+    args = " ".join(a for a in os.environ.get("CALSYNC_LAUNCH_ARGS", "").split() if re.fullmatch(r"--[a-z-]+", a))
     # Start the new copy a moment after this one exits, so the port is free. PyInstaller one-file apps pass
     # their temp folder to child processes; telling the new copy to reset its environment makes it unpack its own.
     import subprocess

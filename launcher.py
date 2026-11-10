@@ -156,6 +156,8 @@ def main():
     if FROZEN and sys.stdout is None:          # windowed .exe has no console: keep messages in a log
         sys.stdout = sys.stderr = open(HERE / "calsync.log", "a", encoding="utf-8", buffering=1)
     args = sys.argv[1:]
+    # Remember how we were started (flags only) so an update can restart calsync the same way.
+    os.environ["CALSYNC_LAUNCH_ARGS"] = " ".join(a for a in args if a.startswith("--") and a[2:].replace("-", "").isalpha())
     load_packages()
     settings = load_settings()
 
