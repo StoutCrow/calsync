@@ -1,5 +1,8 @@
 # Changelog
 
+## 1.0.1
+First published release. The 1.0.0 tag was pushed before the release workflow read the version number correctly, so no 1.0.0 release exists; the code is otherwise the same.
+
 ## 1.0.0
 First public version. Written entirely by Claude (Anthropic) through Claude Code.
 
