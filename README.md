@@ -3,9 +3,9 @@
 Read a schedule, a photo of a calendar, or a sentence, and put the events in **Notion** (so they show in Notion Calendar). See and edit that calendar, with your Google Calendar next to it, in one small local app.
 
 > ## Built entirely by AI
-> **Every line of this project was written by Claude** (an AI model made by Anthropic), working through Claude Code, at the direction of one person. That includes the Python, the web page, the build scripts, the tests, the workflows and this README.
+> **Every line of this project was written by Claude** (Sonnet 5.5 advised by Opus 5.5), working through Claude Code, at the direction of me. That includes the Python, the web page, the build scripts, the tests, the workflows and this README.
 >
-> A human described what they wanted, ran the app on their own computer, and reported what broke. They did **not** write or audit the code. It has **not** had an independent security review. Treat it like any young, unreviewed software: read it before you give it keys, and see [What is not tested](#what-is-not-tested).
+> I described what I wanted, ran the app on my own computer, and reported what broke. I did **not** write or audit the code. It has **not** had an independent security review. Treat it like any young, unreviewed software: read it before you give it keys, and see [What is not tested](#what-is-not-tested).
 >
 > The AI also made mistakes while building this, for example garbling some text through a file-encoding slip, and wrecking a file with a bad find-and-replace (caught and repaired from backups before this repository existed). The tests in `tests/` exist partly because of that.
 
