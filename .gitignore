@@ -1,0 +1,21 @@
+# Secrets and personal data: never commit these
+config/calsync.env
+config/server.txt
+config/*.tmp
+*.log
+window/
+
+# Installed packages and build output
+lib/
+.venv/
+__pycache__/
+*.pyc
+build/
+dist/
+*.spec
+calsync.exe
+calsync.new.exe
+calsync.old.exe
+*.tar.gz
+# old damaged README from an earlier step; superseded by README.md (safe to delete)
+README.txt

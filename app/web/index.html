@@ -1,0 +1,1216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2F3A2C">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="icon" href="/favicon.ico?v=4" sizes="any">
+<link rel="icon" type="image/png" sizes="512x512" href="/icon.png?v=4">
+<link rel="apple-touch-icon" href="/icon.png?v=4">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="calsync">
+<title>calsync</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,600;9..144,800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --desk:#2F3A2C; --leather:#5B3A25; --leather-dark:#3F2717;
+  --paper:#F6EFDF; --paper-hi:#FFFCF4; --rule:rgba(70,100,150,.16); --margin:rgba(190,60,50,.35);
+  --ink:#2A2520; --ink-soft:#5A5046; --pencil:#5F574D;
+  --manila:#E3CF9C; --manila-dark:#C9B27A;
+  --blue-ink:#22428A; --red-ink:#A3291F; --green-ink:#355F31;
+  --sticky:#FBE58A;
+  --work:#2B4C8C; --family:#A8492A; --hangout:#3B6636;
+  --serif:"Fraunces", Georgia, "Times New Roman", serif;
+  --type:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --hand:"Caveat", "Bradley Hand", "Segoe Print", cursive;
+  --grain:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .3 0 0 0 0 .22 0 0 0 0 .1 0 0 0 .09 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0; min-height:100vh; color:var(--ink); font-family:var(--type); font-size:15px; line-height:1.5;
+  background:
+    radial-gradient(ellipse at 50% 0%, rgba(255,255,255,.07), transparent 60%),
+    radial-gradient(ellipse at 50% 120%, rgba(0,0,0,.45), transparent 60%),
+    var(--grain), var(--desk);
+  padding:max(18px, env(safe-area-inset-top)) 12px calc(120px + env(safe-area-inset-bottom));
+}
+button,input,select{font:inherit;color:inherit}
+:focus-visible{outline:3px solid #F2C14E; outline-offset:2px; border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- the planner: leather cover, binder rings, paper ---------- */
+.planner{
+  max-width:760px; margin:0 auto; position:relative; padding:14px 12px 16px;
+  border-radius:16px;
+  background:var(--grain), linear-gradient(160deg, #6A4530, var(--leather) 40%, var(--leather-dark));
+  box-shadow:0 1px 0 rgba(255,255,255,.12) inset, 0 -2px 0 rgba(0,0,0,.25) inset, 0 18px 40px rgba(0,0,0,.45), 0 4px 10px rgba(0,0,0,.3);
+}
+.planner::before{ /* stitching */
+  content:""; position:absolute; inset:6px; border-radius:11px; pointer-events:none;
+  border:2px dashed rgba(240,210,160,.35);
+}
+.rings{display:flex; justify-content:space-around; position:relative; z-index:3; height:22px; margin:-26px 26px -8px}
+.rings span{
+  width:12px; height:34px; border-radius:6px;
+  background:linear-gradient(90deg,#7B7F84,#E9ECEF 35%,#A2A7AD 60%,#5D6166);
+  box-shadow:0 2px 3px rgba(0,0,0,.45);
+}
+
+.masthead{display:flex; align-items:flex-end; justify-content:space-between; gap:12px; flex-wrap:wrap; padding:18px 10px 14px; position:relative; z-index:1}
+.dymo{
+  display:inline-block; transform:rotate(-1.5deg); padding:6px 14px 5px; border-radius:3px;
+  background:repeating-linear-gradient(0deg, rgba(255,255,255,.04) 0 1px, transparent 1px 3px), #151515;
+  color:#F1F1F1; font-family:var(--type); font-weight:600; font-size:20px; letter-spacing:.22em; text-transform:uppercase;
+  text-shadow:0 1px 0 rgba(255,255,255,.28), 0 -1px 0 #000;
+  box-shadow:0 2px 3px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.today{font-family:var(--hand); font-size:22px; color:#F3E2C2; line-height:1.1; text-shadow:0 1px 0 rgba(0,0,0,.4)}
+.demo-tag{font-family:var(--type); font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:#FFE9C2; border:2px solid rgba(255,233,194,.7); padding:2px 8px; border-radius:4px; transform:rotate(2deg); display:inline-block; margin-left:8px; vertical-align:middle}
+
+/* ---------- folder tabs ---------- */
+.tabs{display:flex; gap:4px; padding:0 6px; position:relative; z-index:2; margin-bottom:-1px}
+.tab{
+  flex:1 1 0; min-height:48px; border:none; cursor:pointer; padding:10px 8px 8px;
+  border-radius:12px 12px 0 0; background:var(--grain), linear-gradient(var(--manila), var(--manila-dark));
+  color:#3E3424; font-family:var(--type); font-weight:600; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), inset 0 -6px 8px -6px rgba(0,0,0,.25);
+  display:flex; flex-direction:column; align-items:center; gap:2px;
+}
+.tab[hidden]{display:none}
+.tab{min-width:0}
+@media (max-width:560px){.tab{font-size:11px; letter-spacing:0; padding:10px 2px 8px}.tab small{font-size:13px}}
+.tab small{font-family:var(--hand); font-size:16px; text-transform:none; letter-spacing:0; font-weight:500; color:#5A4C33}
+.tab[aria-selected="true"]{
+  background:var(--grain), var(--paper); color:var(--ink); padding-bottom:12px; margin-top:-6px;
+  box-shadow:inset 0 6px 0 var(--tabc), 0 -2px 6px rgba(0,0,0,.18);
+}
+/* each tab has its own colour: tinted when idle, a coloured bar on top when open */
+.tab[data-mode=work]{--tabc:var(--work)} .tab[data-mode=family]{--tabc:var(--family)}
+.tab[data-mode=describe]{--tabc:#B58A1E} .tab[data-mode=calendar]{--tabc:#5B5348}
+.tab[aria-selected="false"]{background:var(--grain), linear-gradient(color-mix(in srgb, var(--tabc) 28%, var(--manila)), color-mix(in srgb, var(--tabc) 42%, var(--manila-dark)))}
+.upd{background:#FFF4CF; border:1.5px solid #B58A1E; border-radius:10px; padding:10px 14px; margin:0 0 12px; font-size:14px; display:flex; flex-wrap:wrap; gap:8px 14px; align-items:center}
+.upd[hidden]{display:none} .upd b{font-weight:600} .upd .grow{flex:1 1 220px}
+.about{margin-top:26px; padding-top:16px; border-top:1px dashed #C8BBA0; font-size:14px; color:var(--ink-soft); max-width:64ch}
+.about h3{font-family:var(--serif); font-size:20px; color:var(--ink); margin:0 0 6px} .about p{margin:6px 0}
+.legend{display:flex; flex-wrap:wrap; gap:4px 14px; font-size:12px; color:var(--ink-soft); margin:0 0 10px}
+.legend i{display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:5px; background:var(--c); vertical-align:-1px}
+
+/* ---------- ruled sheet ---------- */
+.sheet{
+  position:relative; z-index:1; border-radius:4px 4px 10px 10px; padding:24px 18px 28px 42px; min-height:420px;
+  background:
+    linear-gradient(90deg, transparent 29px, var(--margin) 29px 31px, transparent 31px),
+    repeating-linear-gradient(180deg, transparent 0 31px, var(--rule) 31px 32px),
+    var(--grain), var(--paper);
+  box-shadow:0 1px 0 #fff inset, 0 6px 14px rgba(0,0,0,.28), 0 1px 2px rgba(0,0,0,.2);
+}
+.sheet::after{ /* stack of pages underneath */
+  content:""; position:absolute; left:6px; right:6px; bottom:-6px; height:10px; z-index:-1; border-radius:0 0 10px 10px;
+  background:#E6DCC6; box-shadow:0 3px 6px rgba(0,0,0,.3);
+}
+h1,h2,h3{margin:0}
+.sheet h2{font-family:var(--serif); font-weight:800; font-size:30px; line-height:1.05; letter-spacing:-.01em}
+.lede{margin:8px 0 18px; color:var(--ink-soft); max-width:52ch}
+.lede b{color:var(--ink); font-weight:600}
+.row{display:flex; flex-wrap:wrap; gap:12px; align-items:center}
+
+/* ---------- physical buttons ---------- */
+.key{
+  min-height:52px; padding:0 18px; border-radius:10px; cursor:pointer; position:relative; top:0;
+  display:inline-flex; align-items:center; justify-content:center; gap:10px;
+  font-family:var(--type); font-weight:600; font-size:15px; color:var(--ink);
+  background:linear-gradient(#FFFDF6, #ECE2CC); border:1px solid #B9A884;
+  box-shadow:0 4px 0 #A59372, 0 6px 10px rgba(60,40,10,.22), inset 0 1px 0 #fff;
+  transition:top .06s, box-shadow .06s;
+}
+.key:active:not(:disabled){top:4px; box-shadow:0 0 0 #A59372, 0 1px 2px rgba(60,40,10,.3), inset 0 1px 0 #fff}
+.key svg{width:20px; height:20px; flex:none}
+.key.dark{color:#F6EFDF; background:linear-gradient(#45403A, #221E1A); border-color:#14110E; box-shadow:0 4px 0 #0C0A08, 0 6px 10px rgba(0,0,0,.3), inset 0 1px 0 rgba(255,255,255,.14)}
+.key.dark:active:not(:disabled){box-shadow:0 0 0 #0C0A08, inset 0 1px 0 rgba(255,255,255,.14)}
+.key.red{color:#FFF4EC; background:linear-gradient(#C23A2C, #8E2218); border-color:#5E140D; box-shadow:0 4px 0 #5E140D, 0 6px 12px rgba(90,20,10,.35), inset 0 1px 0 rgba(255,255,255,.25); text-shadow:0 -1px 0 rgba(0,0,0,.35)}
+.key.red:active:not(:disabled){box-shadow:0 0 0 #5E140D, inset 0 1px 0 rgba(255,255,255,.25)}
+.key:disabled{cursor:not-allowed; filter:saturate(.3); opacity:.6}
+.key.big{min-height:60px; font-size:16px; padding:0 24px}
+.key input[type=file]{position:absolute; inset:0; opacity:0; cursor:pointer; width:100%}
+.linkish{background:none; border:none; padding:10px 4px; min-height:44px; cursor:pointer; color:var(--blue-ink); text-decoration:underline; text-underline-offset:3px; font-family:var(--type); font-size:14px}
+
+/* ---------- slide switch ---------- */
+.switch{display:flex; align-items:center; gap:12px; min-height:48px; cursor:pointer; margin-top:16px}
+.switch input{
+  appearance:none; -webkit-appearance:none; margin:0; flex:none; width:58px; height:32px; border-radius:16px; position:relative; cursor:pointer;
+  background:linear-gradient(#2A2622,#4A433B); box-shadow:inset 0 2px 4px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.7);
+}
+.switch input::after{
+  content:""; position:absolute; top:3px; left:3px; width:26px; height:26px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, #FFF6DA, #D2AE5B 55%, #8C6A25);
+  box-shadow:0 2px 3px rgba(0,0,0,.5); transition:left .15s;
+}
+.switch input:checked{background:linear-gradient(#1D3A1B,#3B6636)}
+.switch input:checked::after{left:29px}
+.switch span b{display:block; font-weight:600}
+.switch span small{color:var(--ink-soft); font-size:13px}
+
+/* ---------- form fields on paper ---------- */
+.field{display:flex; flex-direction:column; gap:2px; min-width:140px; flex:1 1 140px}
+.field label{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft)}
+.field input, .field select{
+  min-height:44px; border:none; border-bottom:2px solid #8C7F6C; background:rgba(255,255,255,.45);
+  padding:6px 8px; border-radius:4px 4px 0 0; font-family:var(--type); font-size:16px;
+}
+.field input:focus{background:#fff}
+.email-line{margin-top:22px; padding-top:16px; border-top:1px dashed #BDAF94}
+
+/* ---------- pinned photos ---------- */
+.tray{display:flex; flex-wrap:wrap; gap:16px; margin:22px 0 6px}
+.polaroid{
+  width:120px; background:#fff; padding:8px 8px 6px; border-radius:2px; position:relative;
+  box-shadow:0 2px 6px rgba(0,0,0,.25), 0 1px 1px rgba(0,0,0,.2); transform:rotate(var(--tilt,-2deg));
+}
+.polaroid::before{ /* tape */
+  content:""; position:absolute; top:-10px; left:50%; width:54px; height:20px; transform:translateX(-50%) rotate(3deg);
+  background:rgba(245,235,200,.75); box-shadow:0 1px 2px rgba(0,0,0,.12);
+}
+.polaroid .ph{width:104px; height:90px; object-fit:cover; display:block; background:#EAE3D3}
+.polaroid .pdf{display:flex; align-items:center; justify-content:center; font-weight:600; color:var(--red-ink)}
+.polaroid figcaption{font-family:var(--hand); font-size:16px; line-height:1.1; margin-top:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.polaroid .rm{
+  position:absolute; top:-12px; right:-12px; width:44px; height:44px; border-radius:50%; border:none; background:none; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+}
+.polaroid .rm span{width:26px; height:26px; border-radius:50%; background:#2A2520; color:#fff; display:flex; align-items:center; justify-content:center; box-shadow:0 1px 3px rgba(0,0,0,.4)}
+
+/* ---------- reading / errors ---------- */
+.typing{margin-top:22px; padding:16px 18px; background:var(--paper-hi); border:1px solid #DCCFB3; border-radius:6px; box-shadow:0 2px 6px rgba(60,40,10,.12)}
+.typing p{margin:0}
+.typing .cursor{display:inline-block; width:9px; height:18px; background:var(--ink); vertical-align:-3px; animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+.typing small{color:var(--ink-soft)}
+.torn{
+  margin-top:22px; padding:16px 18px 20px; background:#FFF8E8; color:#5E140D; position:relative;
+  box-shadow:0 2px 6px rgba(0,0,0,.18);
+  clip-path:polygon(0 0,100% 0,100% 88%,96% 100%,90% 90%,83% 100%,76% 91%,69% 100%,61% 90%,53% 100%,46% 91%,38% 100%,31% 90%,23% 100%,16% 91%,8% 100%,3% 90%,0 100%);
+}
+.torn b{font-family:var(--serif); font-size:18px; display:block; color:var(--red-ink)}
+
+/* ---------- results: tear-off tickets ---------- */
+.results-head{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:6px 14px; margin:28px 0 12px; padding-top:20px; border-top:2px solid #2A2520}
+.results-head h3{font-family:var(--serif); font-size:24px; font-weight:800}
+.tickets{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:14px}
+.ticket{
+  display:grid; grid-template-columns:72px minmax(0,1fr) 56px; position:relative; border-radius:6px; overflow:visible;
+  background:var(--grain), var(--paper-hi);
+  box-shadow:0 1px 1px rgba(60,40,10,.12), 0 3px 8px rgba(60,40,10,.14), 0 12px 18px -14px rgba(60,40,10,.4);
+}
+.ticket.off{opacity:.62}
+.ticket.off .t-title{text-decoration:line-through; text-decoration-color:rgba(42,37,32,.5)}
+.stub{
+  border-radius:6px 0 0 6px; display:flex; flex-direction:column; align-items:center; text-align:center; background:#FFFDF8; position:relative; padding-bottom:8px;
+  border-right:2px dotted #C8BBA0;
+}
+.stub .mon{width:100%; padding:4px 0 3px; color:#fff; font-size:12px; font-weight:600; letter-spacing:.14em; border-radius:6px 0 0 0; background:var(--band)}
+.stub .day{font-family:var(--serif); font-weight:800; font-size:32px; line-height:1; margin-top:6px}
+.stub .wd{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft)}
+.t-body{padding:12px 12px 14px 14px; min-width:0}
+.t-type{font-size:11px; font-weight:600; letter-spacing:.14em; text-transform:uppercase; color:var(--band)}
+.t-title{font-weight:600; font-size:16px; line-height:1.3; margin:2px 0 4px; overflow-wrap:anywhere}
+.t-when{font-size:14px}
+.t-meta{font-size:13px; color:var(--ink-soft); overflow-wrap:anywhere}
+.t-note{font-family:var(--hand); font-size:20px; line-height:1.15; color:var(--pencil); margin-top:4px}
+.t-warn{font-family:var(--hand); font-size:20px; line-height:1.15; color:var(--red-ink); margin-top:4px}
+.sticky{
+  display:inline-block; margin-top:10px; padding:8px 12px 10px; max-width:100%; background:var(--sticky); transform:rotate(-1.2deg);
+  font-family:var(--hand); font-size:21px; line-height:1.1; color:#3E3200;
+  box-shadow:0 1px 1px rgba(0,0,0,.1), 2px 5px 8px -4px rgba(0,0,0,.35);
+}
+.tick{display:flex; flex-direction:column; align-items:center; justify-content:space-between; padding:10px 0 6px}
+.tick label{width:48px; height:48px; display:flex; align-items:center; justify-content:center; cursor:pointer}
+.tick input{position:absolute; opacity:0; width:1px; height:1px}
+.box{width:30px; height:30px}
+.box .mark{opacity:0}
+.tick input:checked + .box .mark{opacity:1}
+.tick input:focus-visible + .box{outline:3px solid #F2C14E; outline-offset:3px; border-radius:4px}
+.tick input:disabled + .box{opacity:.4}
+.edit-btn{width:48px; height:48px; border:none; background:none; cursor:pointer; color:var(--ink-soft); display:flex; align-items:center; justify-content:center; border-radius:8px}
+.edit-btn svg{width:20px; height:20px}
+.ink-stamp{
+  display:inline-block; margin-top:10px; transform:rotate(-4deg); transform-origin:left center; pointer-events:none; white-space:nowrap; max-width:100%;
+  font-family:var(--type); font-weight:600; font-size:13px; letter-spacing:.12em; text-transform:uppercase; padding:3px 9px;
+  border:3px double currentColor; border-radius:6px; color:rgba(163,41,31,.82); mix-blend-mode:multiply;
+  -webkit-mask-image:var(--grain), linear-gradient(#000,#000); mask-image:linear-gradient(#000,#000);
+}
+.ink-stamp.blue{color:rgba(34,66,138,.75)}
+.editor{grid-column:1 / -1; padding:4px 14px 16px; border-top:1px dashed #C8BBA0; display:flex; flex-direction:column; gap:12px}
+.editor .row{gap:12px}
+.check-inline{display:flex; align-items:center; gap:8px; min-height:44px; cursor:pointer}
+.check-inline input{width:22px; height:22px; accent-color:var(--blue-ink)}
+.empty{padding:16px 18px; background:var(--paper-hi); border:1px dashed #BDAF94; border-radius:6px}
+.empty b{font-family:var(--serif); font-size:18px; display:block}
+
+/* ---------- bottom rail with the stamp button ---------- */
+.rail{
+  position:fixed; left:0; right:0; bottom:0; z-index:10; padding:12px 12px calc(12px + env(safe-area-inset-bottom));
+  background:var(--grain), linear-gradient(#4A3020, #2E1C10); box-shadow:0 -6px 16px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.12);
+}
+.rail-in{max-width:760px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap}
+.rail-in p{margin:0; color:#F3E2C2; font-size:14px}
+.rail-in p b{color:#fff; font-size:15px}
+
+/* ---------- connection slip ---------- */
+.slip{
+  max-width:520px; margin:34px auto 0; padding:16px 18px 18px; background:var(--grain), #EFE6D2; border-radius:3px; color:var(--ink);
+  transform:rotate(.6deg); box-shadow:0 3px 8px rgba(0,0,0,.35);
+}
+.slip h2{font-family:var(--type); font-size:12px; font-weight:600; letter-spacing:.16em; text-transform:uppercase; margin-bottom:8px}
+.slip ul{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:6px; font-size:14px}
+.slip li{display:flex; gap:6px; align-items:baseline}
+.slip .lead{flex:1; border-bottom:2px dotted #A89B84; transform:translateY(-4px); min-width:20px}
+.slip .ok{color:var(--green-ink); font-weight:600}
+.slip .no{color:var(--red-ink); font-weight:600}
+.slip .fix{display:block; font-size:12px; color:var(--ink-soft)}
+.slip p{margin:12px 0 0; font-size:13px; color:var(--ink-soft)}
+
+/* ---------- brass gear + settings ---------- */
+.tabs[hidden]{display:none}
+.mast-r{display:flex; align-items:center; gap:16px}
+.gear-btn{
+  width:56px; height:56px; border-radius:50%; border:none; padding:0; cursor:pointer; position:relative; flex:none; top:0;
+  display:grid; place-items:center;
+  background:linear-gradient(145deg,#F6F7F8,#8E9399 45%,#CDD0D4 70%,#6A6E73);
+  box-shadow:0 3px 0 #34373A, 0 7px 12px rgba(0,0,0,.45), inset 0 1px 1px #fff;
+  transition:top .06s, box-shadow .06s;
+}
+.gear-btn::before{
+  content:""; position:absolute; inset:6px; border-radius:50%;
+  background:radial-gradient(circle at 50% 65%,#3A3733,#171513);
+  box-shadow:inset 0 3px 6px rgba(0,0,0,.85), 0 1px 0 rgba(255,255,255,.55);
+}
+.gear-btn:active{top:3px; box-shadow:0 0 0 #34373A, 0 1px 2px rgba(0,0,0,.5), inset 0 1px 1px #fff}
+.gear{position:relative; display:block; filter:drop-shadow(0 1px 1px rgba(0,0,0,.65)); transition:transform .35s ease-out}
+.gear-btn .gear{width:36px; height:36px}
+.gear-btn[aria-expanded="true"] .gear{transform:rotate(36deg)}
+.cfg-head{display:flex; align-items:center; gap:16px; margin-bottom:6px}
+.cfg-head .gear{width:64px; height:64px; flex:none}
+.cfg-head .lede{margin:4px 0 0}
+.gear.spin{animation:spin 2.4s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.cfg{display:flex; flex-direction:column; gap:0}
+.cfg-sec{border:none; border-top:1px solid #BDAF94; margin:0; padding:14px 0 18px; min-width:0}
+.cfg-sec legend{font-family:var(--serif); font-weight:800; font-size:20px; padding:0 8px 0 0; float:left; width:100%; margin-bottom:8px}
+.cfg-sec .row{clear:both}
+.cfg-sec .field{margin-bottom:8px}
+.cfg-sec .field small{color:var(--ink-soft); font-size:12px}
+.cfg-result{font-size:14px; flex:1 1 200px; overflow-wrap:anywhere}
+.cfg-result.ok{color:var(--green-ink)} .cfg-result.no{color:var(--red-ink)}
+.field .lab{font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px}
+.pick{display:flex; gap:10px; flex-wrap:wrap}
+.pick label{cursor:pointer; position:relative; font-size:inherit; letter-spacing:0; text-transform:none; color:inherit}
+.pick input{position:absolute; opacity:0; width:1px; height:1px}
+.pick span{
+  position:relative; top:0; display:inline-flex; align-items:center; min-height:48px; padding:0 20px; border-radius:10px; font-weight:600;
+  background:linear-gradient(#FFFDF6,#ECE2CC); border:1px solid #B9A884; box-shadow:0 4px 0 #A59372, 0 6px 10px rgba(60,40,10,.2), inset 0 1px 0 #fff;
+  transition:top .06s, box-shadow .06s;
+}
+.pick input:checked + span{top:3px; color:#F6EFDF; background:linear-gradient(#2A2622,#4A433B); border-color:#14110E; box-shadow:inset 0 2px 5px rgba(0,0,0,.6), 0 1px 0 rgba(255,255,255,.7)}
+.pick input:focus-visible + span{outline:3px solid #F2C14E; outline-offset:2px}
+.cfg-foot{border-top:1px solid #BDAF94; padding-top:18px}
+
+@media (max-width:420px){
+  .sheet{padding-left:38px; padding-right:12px}
+  .sheet h2{font-size:26px}
+  .ticket{grid-template-columns:62px minmax(0,1fr) 52px}
+  .stub .day{font-size:28px}
+  .key{padding:0 14px}
+  .tab{font-size:12px; letter-spacing:.04em}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+.vtabs{display:inline-flex; border:1.5px solid #2A2520; border-radius:8px; overflow:hidden}
+.vtab{background:#FFFCF4; border:0; padding:0 14px; min-height:44px; font-family:var(--type); font-size:14px; cursor:pointer; color:var(--ink)}
+.vtab[aria-pressed=true]{background:#2A2520; color:#F6EFDF}
+.clist{list-style:none; margin:8px 0 0; padding:0; border-top:1px solid #C8BBA0}
+.crow{display:grid; grid-template-columns:62px 92px 1fr auto; gap:0 10px; align-items:center; min-height:44px; padding:2px 6px 2px 10px; border-bottom:1px solid #D9CDB3; border-left:5px solid var(--band)}
+.crow .cd{font-size:13px; color:var(--ink-soft)} .crow .cd b{font-size:15px; color:var(--ink)}
+.crow .ct{font-size:13px; color:var(--ink-soft)}
+.crow .cn{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap} .crow .cn small{color:var(--ink-soft)}
+.crow .cb{display:flex} .crow .editor{grid-column:1 / -1; margin-top:6px}
+.grid{margin-top:8px; border:1.5px solid #2A2520; border-radius:8px; overflow:hidden; background:#FFFCF4}
+.gh,.gb{display:grid; grid-template-columns:repeat(7,minmax(0,1fr))}
+.gh span{padding:4px 6px; font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); background:#EADFC6}
+.gcell{min-height:92px; padding:2px; border-top:1px solid #D9CDB3; border-left:1px solid #D9CDB3; display:flex; flex-direction:column; gap:2px; min-width:0}
+.gcell:nth-child(7n+1){border-left:0}
+.gcell.out{background:#F1E9D4; opacity:.65}
+.gnum{align-self:flex-start; background:none; border:0; font-family:var(--type); font-size:12px; color:var(--ink-soft); min-width:24px; min-height:24px; border-radius:12px; cursor:pointer}
+.gcell.today .gnum{background:#B5532F; color:#fff}
+.chip{display:block; width:100%; text-align:left; border:0; border-left:3px solid var(--band); background:color-mix(in srgb, var(--band) 14%, #FFFCF4); padding:1px 4px; font-family:var(--type); font-size:11px; line-height:1.35; color:var(--ink); border-radius:3px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; cursor:pointer}
+.chip i{font-style:normal; opacity:.7}
+.help{margin:0 0 12px; font-size:14px} .help summary{cursor:pointer; color:var(--blue-ink); text-decoration:underline; text-underline-offset:3px; min-height:32px}
+.help ol{margin:8px 0 0; padding-left:20px; display:flex; flex-direction:column; gap:6px; max-width:60ch} .help a{color:var(--blue-ink)}
+.pop{position:fixed; z-index:50; width:min(380px, calc(100vw - 16px)); max-height:calc(100vh - 16px); overflow:auto; background:#FFFCF4; border:1.5px solid #2A2520; border-radius:10px; box-shadow:0 14px 34px rgba(0,0,0,.4); padding:12px 14px 6px}
+.pop .editor{border:0; padding:0}
+.tip{position:fixed; z-index:40; max-width:260px; pointer-events:none; background:#2A2520; color:#F6EFDF; padding:8px 11px; border-radius:8px; font-size:12px; line-height:1.4; box-shadow:0 8px 20px rgba(0,0,0,.35)}
+.tip b{display:block; font-size:13px} .tip .n{opacity:.8; margin-top:2px} .tip .h{opacity:.55; margin-top:4px; font-size:11px}
+.chip.ro{cursor:default; background:color-mix(in srgb, var(--band) 10%, #FFFCF4)}
+.ro-tag{color:#7A5BA6; font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding-right:6px}
+.chip[draggable=true]{cursor:grab} .chip.dragging{opacity:.4}
+.gcell.over{outline:2px solid #B5532F; outline-offset:-2px; background:#FBE9DC}
+.more{background:none; border:0; font-size:11px; color:var(--blue-ink); text-align:left; cursor:pointer; padding:0 4px; font-family:var(--type)}
+@media (max-width:560px){.gcell{min-height:64px}.chip{font-size:10px;padding:0 2px}.chip i{display:none}.crow{grid-template-columns:48px 1fr auto}.crow .ct{display:none}}
+</style>
+</head>
+<body>
+<main class="planner" aria-labelledby="app-title">
+  <div class="rings" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+  <header class="masthead">
+    <div>
+      <h1 id="app-title" class="dymo">calsync</h1>
+      <span id="demo-tag"></span>
+    </div>
+    <div class="mast-r">
+      <p class="today" id="today" style="margin:0"></p>
+      <button class="gear-btn" id="gear" data-action="settings" aria-label="Settings" aria-expanded="false"></button>
+    </div>
+  </header>
+  <div id="upd" class="upd" role="status" hidden></div>
+  <div class="tabs" role="tablist" aria-label="What are you adding">
+    <button class="tab" role="tab" id="tab-work" aria-controls="sheet" data-mode="work">Work<small>shifts</small></button>
+    <button class="tab" role="tab" id="tab-family" aria-controls="sheet" data-mode="family">Family<small>fridge</small></button>
+    <button class="tab" role="tab" id="tab-describe" aria-controls="sheet" data-mode="describe">Describe<small>type it</small></button>
+    <button class="tab" role="tab" id="tab-calendar" aria-controls="sheet" data-mode="calendar">Calendar<small>notion</small></button>
+  </div>
+  <section class="sheet" id="sheet" role="tabpanel" aria-live="polite"></section>
+</main>
+<aside class="slip" id="slip" aria-label="Connections"></aside>
+<div class="rail" id="rail" hidden></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <linearGradient id="g-brass" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFEDB0"/><stop offset=".45" stop-color="#D8A93F"/><stop offset="1" stop-color="#7A5514"/></linearGradient>
+    <radialGradient id="g-bore" cx=".5" cy=".6" r=".6"><stop offset="0" stop-color="#4A3A22"/><stop offset="1" stop-color="#17110A"/></radialGradient>
+    <symbol id="i-camera" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 8h3.5l2-3h5l2 3H20v11H4z"/><circle cx="12" cy="13.5" r="3.6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-files" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M7 3h7l4 4v14H7z M14 3v4h4"/><path fill="none" stroke="currentColor" stroke-width="2" d="M4 7v14h10" opacity=".6"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="m4 7 8 6 8-6" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-read" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="m15 15 5.5 5.5" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-pen" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M4 20l1-4L16.5 4.5a2.1 2.1 0 0 1 3 3L8 19z"/><path d="M13.5 7.5l3 3" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-stamp" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" d="M9 3h6v4c0 2 3 3 3 6H6c0-3 3-4 3-6z M4 15h16v3H4z M6 21h12"/></symbol>
+    <symbol id="i-photos" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="9" cy="10" r="2" fill="currentColor"/><path d="m4 18 5-5 4 4 3-3 4 4" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+  </defs>
+</svg>
+
+<script>
+"use strict";
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const icon = (id) => `<svg aria-hidden="true"><use href="#i-${id}"/></svg>`;
+
+function store(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
+function recall(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+const hashToken = (location.hash.match(/t=([^&]+)/) || [])[1];
+if (hashToken) { store("calsync-token", hashToken); history.replaceState(null, "", location.pathname); }
+const TOKEN = hashToken || recall("calsync-token") || "";
+
+const COPY = {
+  work: { h: "Work schedule", noun: ["shift", "shifts"] },
+  family: { h: "Fridge calendar", noun: ["event", "events"] },
+  hangouts: { h: "Past hangouts", noun: ["hangout", "hangouts"] },
+  describe: { h: "Describe an event", noun: ["event", "events"] },
+};
+const S = {
+  mode: recall("calsync-mode") || "family", files: [], onlyMe: recall("calsync-onlyme") === "1",
+  phase: "idle", cards: [], error: "", addError: "", message: "", started: 0, status: null, editing: null, added: 0,
+  days: 14, since: "", until: "", text: "",
+  cal: { y: new Date().getFullYear(), m: new Date().getMonth(), showG: recall("calsync-showg") !== "0", google: [], gerr: "", view: recall("calsync-calview") === "list" ? "list" : "month", newDate: "", events: null, loading: false, error: "", editing: null, saving: false, formError: "" },
+  view: "main", cfg: null, cfgBusy: "", cfgMsg: "", cfgErr: false, cfgTest: {},
+};
+
+async function api(path, body) {
+  let res;
+  try { res = await fetch(path, { method: "POST", headers: { "Content-Type": "application/json", "X-Calsync-Token": TOKEN }, body: JSON.stringify(body || {}) }); }
+  catch (e) { throw new Error("Can’t reach calsync. It was probably closed or restarted: close this window and open calsync again."); }
+  let data = {};
+  try { data = await res.json(); } catch (e) { throw new Error("The calsync server sent back something unexpected. Is app.py still running?"); }
+  if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+  return data;
+}
+
+/* ---------- formatting ---------- */
+function to12(t) {
+  const [h, m] = t.split(":").map(Number);
+  return { t: `${((h + 11) % 12) + 1}:${String(m).padStart(2, "0")}`, ap: h < 12 ? "AM" : "PM" };
+}
+function when(c) {
+  if (c.all_day) return "All day";
+  const a = to12(c.start_time), b = c.end_time ? to12(c.end_time) : null;
+  if (!b) return `${a.t} ${a.ap}`;
+  return a.ap === b.ap ? `${a.t} – ${b.t} ${b.ap}` : `${a.t} ${a.ap} – ${b.t} ${b.ap}`;
+}
+function stubParts(iso) {
+  const d = new Date(iso + "T12:00:00");
+  return { mon: d.toLocaleDateString("en-US", { month: "short" }).toUpperCase(), day: d.getDate(), wd: d.toLocaleDateString("en-US", { weekday: "short" }) };
+}
+function minutes(c) {
+  const day = Date.parse(c.date + "T00:00:00Z") / 60000;
+  const [sh, sm] = c.start_time.split(":").map(Number);
+  let s = day + sh * 60 + sm, e = s + 60;
+  if (c.end_time) { const [eh, em] = c.end_time.split(":").map(Number); e = day + eh * 60 + em; if (e <= s) e += 1440; }
+  return [s, e];
+}
+function overlaps() {
+  const on = S.cards.filter((c) => c.on && !c.all_day);
+  const out = {};
+  for (const a of on) for (const b of on) {
+    if (a === b) continue;
+    const [as, ae] = minutes(a), [bs, be] = minutes(b);
+    if (as < be && bs < ae) out[a.key] = b.title;
+  }
+  return out;
+}
+const plural = (n, [one, many]) => `${n} ${n === 1 ? one : many}`;
+
+/* ---------- files: shrink photos on the phone before upload ---------- */
+async function prepare(file) {
+  const isPdf = file.type === "application/pdf" || /\.pdf$/i.test(file.name);
+  if (!isPdf && file.type.startsWith("image/")) {
+    try {
+      const bmp = await createImageBitmap(file, { imageOrientation: "from-image" });
+      const scale = Math.min(1, 2400 / Math.max(bmp.width, bmp.height));
+      const cv = document.createElement("canvas");
+      cv.width = Math.round(bmp.width * scale); cv.height = Math.round(bmp.height * scale);
+      cv.getContext("2d").drawImage(bmp, 0, 0, cv.width, cv.height);
+      const url = cv.toDataURL("image/jpeg", 0.9);
+      return { name: file.name.replace(/\.\w+$/, "") + ".jpg", data: url.split(",")[1], thumb: url };
+    } catch (e) { /* e.g. HEIC on a desktop browser: send as-is */ }
+  }
+  const data = await new Promise((ok, bad) => { const r = new FileReader(); r.onload = () => ok(r.result.split(",")[1]); r.onerror = bad; r.readAsDataURL(file); });
+  return { name: file.name, data, thumb: isPdf ? "" : "", pdf: isPdf };
+}
+
+/* ---------- rendering ---------- */
+const TAB_DEFAULT = { work: ["Work", "schedules"], family: ["Personal", "home & friends"], describe: ["Describe", "type it"], calendar: ["Calendar", "notion"] };
+function tabInfo(k) {
+  const t = S.status?.tabs?.[k] || { label: TAB_DEFAULT[k][0], sub: TAB_DEFAULT[k][1] };
+  return { label: t.label, sub: t.sub === "-" ? "" : t.sub, hidden: t.label.trim() === "-" };
+}
+function renderTabs() {
+  let firstVisible = null;
+  document.querySelectorAll(".tab").forEach((t) => {
+    const k = t.dataset.mode, info = tabInfo(k);
+    t.hidden = info.hidden;
+    t.innerHTML = `${esc(info.label)}${info.sub ? `<small>${esc(info.sub)}</small>` : ""}`;
+    if (!info.hidden && !firstVisible) firstVisible = k;
+  });
+  const owner = S.mode === "hangouts" ? "family" : S.mode;                  // hangouts live inside the Personal tab
+  if (firstVisible && tabInfo(owner).hidden) S.mode = firstVisible;       // the saved tab was hidden
+  document.querySelectorAll(".tab").forEach((t) => {
+    const on = t.dataset.mode === (S.mode === "hangouts" ? "family" : S.mode);
+    t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1;
+  });
+  $("#sheet").setAttribute("aria-labelledby", "tab-" + (S.mode === "hangouts" ? "family" : S.mode));
+}
+
+function names() { return S.status?.names || "your name"; }
+
+function panelWork() {
+  return `
+    <h2>${esc(tabInfo("work").label)}</h2>
+    <p class="lede">A screenshot from your schedule app, a roster graphic or a PDF. Only shifts for <b>${esc(names())}</b> are kept.</p>
+    <div class="row">
+      <span class="key">${icon("camera")}Take photo<input type="file" accept="image/*" capture="environment" data-files aria-label="Take photo of a schedule"></span>
+      <span class="key">${icon("files")}Choose files<input type="file" accept="image/*,application/pdf,.txt" multiple data-files aria-label="Choose schedule files"></span>
+    </div>
+    <div class="email-line">
+      <div class="row" style="align-items:flex-end">
+        <div class="field" style="flex:0 1 160px"><label for="days">Emails from last</label>
+          <select id="days" data-days>${[7, 14, 30].map((d) => `<option value="${d}" ${S.days == d ? "selected" : ""}>${d} days</option>`).join("")}</select></div>
+        <button class="key" data-action="email" ${busy()}>${icon("mail")}Check email</button>
+      </div>
+    </div>`;
+}
+function panelDescribe() {
+  return `
+    <h2>Describe an event</h2>
+    <p class="lede">Say it in your own words. Your chosen AI works out the dates and times, and you check them before anything is added.</p>
+    <div class="field" style="flex-basis:100%"><label for="desc">What’s happening?</label>
+      <textarea id="desc" data-text rows="4" placeholder="Dentist next Tuesday at 3pm for an hour. Soccer with Mia every Thursday in November, 5 to 6 at Riverside Park." style="font:inherit;padding:10px 12px;border:1.5px solid #2A2520;border-radius:8px;background:#FFFCF4;resize:vertical">${esc(S.text)}</textarea></div>
+    <div class="row" style="margin-top:12px"><button class="key dark big" data-action="describe" ${busy()}>${icon("read")}Work it out</button>
+      <button class="linkish" data-action="describe-clear">Clear</button></div>`;
+}
+/* Personal tab: switch between a photo calendar and past hangouts (Immich) */
+function personalSwitch() {
+  const b = (m, t) => `<button class="vtab" data-action="sub" data-id="${m}" aria-pressed="${S.mode === m}">${t}</button>`;
+  const immich = S.status?.demo || S.status?.connections?.find((c) => c.name === "Immich")?.ok;
+  return `<div class="row" style="margin-bottom:14px"><span class="vtabs" role="group" aria-label="What to read">${b("family", "Photo calendar")}${b("hangouts", "Past hangouts")}</span></div>
+    ${S.mode === "hangouts" && !immich ? `<p class="lede"><b>Hangouts need Immich.</b> Add its address and API key under Settings (gear, top right).</p>` : ""}`;
+}
+function panelFamily() {
+  return personalSwitch() + `
+    <h2>${esc(tabInfo("family").label)}</h2>
+    <p class="lede">Photograph the whole calendar, straight on and in good light. Each event is labelled with who it’s for.</p>
+    <div class="row">
+      <span class="key">${icon("camera")}Take photo<input type="file" accept="image/*" capture="environment" data-files aria-label="Take photo of the fridge calendar"></span>
+      <span class="key">${icon("photos")}Choose from photos<input type="file" accept="image/*" multiple data-files aria-label="Choose photos of the calendar"></span>
+    </div>
+    <label class="switch"><input type="checkbox" role="switch" data-onlyme ${S.onlyMe ? "checked" : ""}>
+      <span><b>Only mine + everyone’s</b><small>Skip events just for other family members</small></span></label>`;
+}
+function panelHangouts() {
+  const today = S.status?.today || "";
+  return personalSwitch() + `
+    <h2>Past hangouts</h2>
+    <p class="lede">Looks through your Immich photos for outings with friends Immich has recognised, using when and where the photos were taken.</p>
+    <div class="row" style="align-items:flex-end">
+      <div class="field"><label for="since">From</label><input id="since" type="date" data-since value="${esc(S.since)}" max="${esc(today)}"></div>
+      <div class="field"><label for="until">To</label><input id="until" type="date" data-until value="${esc(S.until || today)}" max="${esc(today)}"></div>
+      <button class="key dark" data-action="hangouts" ${busy()}>${icon("read")}Find hangouts</button>
+    </div>`;
+}
+const busy = () => (S.phase === "reading" || S.phase === "adding" ? "disabled" : "");
+
+function tray() {
+  if (!S.files.length || S.mode === "hangouts" || S.mode === "describe") return "";
+  const tilts = ["-2.5deg", "1.8deg", "-1deg", "2.6deg"];
+  return `
+    <div class="tray">${S.files.map((f, i) => `
+      <figure class="polaroid" style="--tilt:${tilts[i % 4]}; margin:0">
+        ${f.thumb ? `<img class="ph" src="${f.thumb}" alt="">` : `<div class="ph pdf">${f.pdf ? "PDF" : "FILE"}</div>`}
+        <figcaption>${esc(f.name)}</figcaption>
+        <button class="rm" data-action="remove" data-i="${i}" aria-label="Remove ${esc(f.name)}"><span aria-hidden="true">×</span></button>
+      </figure>`).join("")}
+    </div>
+    <div class="row" style="margin-top:16px">
+      <button class="key dark big" data-action="read" ${busy()}>${icon("read")}Read ${S.files.length > 1 ? S.files.length + " pages" : "it"}</button>
+      <button class="linkish" data-action="clear">Clear</button>
+    </div>`;
+}
+
+function status() {
+  if (S.phase === "reading") {
+    const what = S.mode === "describe" ? "Working out the dates" : S.mode === "family" ? "Reading the handwriting" : S.mode === "hangouts" ? "Looking through your photos" : "Reading the schedule";
+    return `<div class="typing" role="status"><p>${what}<span class="cursor" aria-hidden="true"></span></p>
+      <small><span id="elapsed">0</span>s · usually 10–40 seconds</small></div>`;
+  }
+  if (S.phase === "error") return `<div class="torn" role="alert"><b>That didn’t work</b>${esc(S.error)}</div>`;
+  return "";
+}
+
+function ticket(c, clash) {
+  const p = stubParts(c.date);
+  const band = c.type === "Work" ? "var(--work)" : c.type === "Hangout" ? "var(--hangout)" : "var(--family)";
+  const meta = [c.people, c.location].filter(Boolean).join(" · ");
+  const locked = c.already || c.added;
+  const editing = S.editing === c.key;
+  return `
+  <li class="ticket ${c.on || locked ? "" : "off"}" style="--band:${band}">
+    <div class="stub" aria-hidden="true"><span class="mon">${p.mon}</span><span class="day">${p.day}</span><span class="wd">${p.wd}</span></div>
+    <div class="t-body">
+      <div class="t-type">${esc(c.type)}</div>
+      <div class="t-title" id="t-${esc(c.key)}">${esc(c.title)}</div>
+      <div class="t-when">${p.wd} ${p.mon.charAt(0) + p.mon.slice(1).toLowerCase()} ${p.day} · ${when(c)}</div>
+      ${meta ? `<div class="t-meta">${esc(meta)}</div>` : ""}
+      ${c.notes ? `<div class="t-note">${esc(c.notes)}</div>` : ""}
+      ${clash ? `<div class="t-warn">Clashes with “${esc(clash)}”</div>` : ""}
+      ${c.unsure && !locked ? `<div class="sticky">Check this one, the writing was hard to read. Tap the pen to fix it.</div>` : ""}
+      ${c.added ? `<span class="ink-stamp">Added to Notion</span>` : c.already ? `<span class="ink-stamp blue">Already in Notion</span>` : ""}
+    </div>
+    <div class="tick">
+      <label title="${c.on ? "Will be added" : "Skipped"}">
+        <input type="checkbox" data-toggle="${esc(c.key)}" ${c.on || c.added ? "checked" : ""} ${locked || S.phase === "adding" ? "disabled" : ""} aria-labelledby="t-${esc(c.key)}" aria-describedby="tick-desc">
+        <svg class="box" viewBox="0 0 30 30" aria-hidden="true">
+          <path d="M4 5.5 Q4 4 5.5 4.2 L25 3.6 Q26.4 3.7 26.3 5 L26 25 Q26 26.3 24.6 26.2 L5 26.4 Q3.7 26.4 3.8 25 Z" fill="#fff" stroke="#2A2520" stroke-width="1.8"/>
+          <path class="mark" d="M7 15.5 L12.5 21.5 L24.5 6.5" fill="none" stroke="var(--blue-ink)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </label>
+      ${locked ? "" : `<button class="edit-btn" data-action="edit" data-key="${esc(c.key)}" aria-label="Edit ${esc(c.title)}" aria-expanded="${editing}">${icon("pen")}</button>`}
+    </div>
+    ${editing ? editor(c) : ""}
+  </li>`;
+}
+
+function editor(c) {
+  const k = esc(c.key);
+  return `
+  <form class="editor" data-editor="${k}">
+    <div class="field" style="flex-basis:100%"><label for="e-title-${k}">Title</label><input id="e-title-${k}" name="title" value="${esc(c.title)}"></div>
+    <div class="row">
+      <div class="field"><label for="e-date-${k}">Date</label><input id="e-date-${k}" name="date" type="date" value="${esc(c.date)}"></div>
+      <div class="field"><label for="e-start-${k}">Starts</label><input id="e-start-${k}" name="start_time" type="time" value="${esc(c.start_time)}"></div>
+      <div class="field"><label for="e-end-${k}">Ends</label><input id="e-end-${k}" name="end_time" type="time" value="${esc(c.end_time)}"></div>
+    </div>
+    <label class="check-inline"><input type="checkbox" name="all_day" ${c.all_day ? "checked" : ""}> All day</label>
+    <div class="field" style="flex-basis:100%"><label for="e-notes-${k}">Notes</label><input id="e-notes-${k}" name="notes" value="${esc(c.notes)}"></div>
+    <div class="row">
+      <button class="key dark" type="submit">Save</button>
+      <button class="linkish" type="button" data-action="cancel-edit">Cancel</button>
+    </div>
+  </form>`;
+}
+
+function results() {
+  if (S.phase !== "results" && S.phase !== "adding" && S.phase !== "added") return "";
+  const noun = COPY[S.mode].noun;
+  if (!S.cards.length) {
+    const why = S.message || (S.mode === "work"
+      ? `None of these names are on it: ${names()}. If you go by another name at this job, add it under Settings (gear, top right).`
+      : S.mode === "describe" ? "I couldn’t find an event in that. Try adding a day and a time, like “Dentist Friday at 3pm”."
+      : S.mode === "family" ? "Try a sharper photo with the whole month in frame, or turn off “Only mine”."
+      : "No outings with recognised friends in those dates. Try a wider date range.");
+    return `<div class="results-head"><h3>Nothing found</h3></div><div class="empty"><b>No ${noun[1]} to add</b>${esc(why)}</div>`;
+  }
+  const clash = overlaps();
+  const fresh = S.cards.filter((c) => !c.already);
+  return `
+    <div class="results-head">
+      <h3>Found ${plural(S.cards.length, noun)}</h3>
+      ${fresh.length > 1 && S.phase === "results" ? `<span><button class="linkish" data-action="all">Tick all</button> <button class="linkish" data-action="none">Untick all</button></span>` : ""}
+    </div>
+    <p id="tick-desc" class="sr-only">Ticked items are added to Notion.</p>
+    <ul class="tickets">${S.cards.map((c) => ticket(c, clash[c.key])).join("")}</ul>`;
+}
+
+/* ---------- calendar: see and edit what is in Notion ---------- */
+const monthStart = () => new Date(S.cal.y, S.cal.m, 1);
+const iso = (d) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+const blankEvent = () => ({ ...blankBase(), ...(S.cal.newDate ? { date: S.cal.newDate } : {}) });
+const blankBase = () => ({ id: "", title: "", type: "Family", status: "Confirmed", people: "", location: "", notes: "",
+  all_day: false, date: iso(new Date(S.cal.y, S.cal.m, new Date().getMonth() === S.cal.m && new Date().getFullYear() === S.cal.y ? new Date().getDate() : 1)),
+  start_time: "09:00", end_time: "10:00", end_date: "" });
+
+async function calLoad(silent) {
+  const a = monthStart(), b = new Date(S.cal.y, S.cal.m + 1, 1), month = S.cal.y * 12 + S.cal.m;
+  if (!silent) { S.cal.loading = true; S.cal.error = ""; S.cal.editing = null; render(); }
+  try {
+    const data = await api("/api/calendar", { from: iso(a), to: iso(b) });
+    const events = data.events, google = data.google || [];
+    if (month !== S.cal.y * 12 + S.cal.m) return;                       // user changed month meanwhile
+    if (silent && JSON.stringify([events, google]) === JSON.stringify([S.cal.events, S.cal.google])) return;   // nothing changed
+    S.cal.events = events; S.cal.google = google; S.cal.gerr = data.google_error || ""; S.cal.error = "";
+  } catch (e) { if (silent) return; S.cal.error = e.message; S.cal.events = []; }
+  S.cal.loading = false; render();
+}
+/* Live sync: pick up changes made in Notion every 30 s, and when you come back to the window.
+   Skipped while you are typing an edit, so nothing is lost. */
+function calSync() {
+  if (S.mode === "calendar" && S.view === "main" && !S.cal.editing && !S.cal.loading && !S.cal.saving && !document.hidden) calLoad(true);
+}
+setInterval(calSync, 30000);
+document.addEventListener("visibilitychange", calSync);
+window.addEventListener("focus", calSync);
+
+function findEv(id) { return [...(S.cal.events || []), ...(S.cal.google || [])].find((x) => x.id === id); }
+function calEditor(c) {
+  const d = S.cal.draft;
+  if (d && (d.id || "new") === (c.id || "new")) c = { ...c, ...d };   // keep typed edits after a failed save
+  const id = c.id || "new", sel = (name, opts, v) => `<select name="${name}">${opts.map((o) => `<option ${o === v ? "selected" : ""}>${o}</option>`).join("")}</select>`;
+  return `
+  <form class="editor" data-caleditor="${esc(id)}">
+    <div class="field" style="flex-basis:100%"><label for="c-title">Title</label><input id="c-title" name="title" value="${esc(c.title)}" required></div>
+    <div class="row">
+      <div class="field"><label for="c-date">Date</label><input id="c-date" name="date" type="date" value="${esc(c.date)}" required></div>
+      <div class="field"><label for="c-start">Starts</label><input id="c-start" name="start_time" type="time" value="${esc(c.start_time)}"></div>
+      <div class="field"><label for="c-end">Ends</label><input id="c-end" name="end_time" type="time" value="${esc(c.end_time)}"></div>
+    </div>
+    <label class="check-inline"><input type="checkbox" name="all_day" ${c.all_day ? "checked" : ""}> All day</label>
+    <div class="row">
+      <div class="field"><label for="c-type">Type</label>${sel("type", c.type === "Google" ? ["Google"] : ["Work", "Family", "Hangout", ...(S.status?.google_edit ? ["Google"] : [])], c.type).replace("<select", '<select id="c-type"')}</div>
+      <div class="field"><label for="c-status">Status</label>${sel("status", ["Confirmed", "Done"], c.status).replace("<select", '<select id="c-status"')}</div>
+    </div>
+    <div class="row">
+      <div class="field"><label for="c-people">People</label><input id="c-people" name="people" value="${esc(c.people)}"></div>
+      <div class="field"><label for="c-loc">Location</label><input id="c-loc" name="location" value="${esc(c.location)}"></div>
+    </div>
+    <div class="field" style="flex-basis:100%"><label for="c-notes">Notes</label><input id="c-notes" name="notes" value="${esc(c.notes)}"></div>
+    ${S.cal.formError ? `<p class="t-warn" role="alert">${esc(S.cal.formError)}</p>` : ""}
+    <div class="row">
+      <button class="key dark" type="submit" ${S.cal.saving ? "disabled" : ""}>${S.cal.saving ? "Saving…" : "Save to Notion"}</button>
+      <button class="linkish" type="button" data-action="cal-cancel">Cancel</button>
+    </div>
+  </form>`;
+}
+
+const bandOf = (t) => t === "Work" ? "var(--work)" : t === "Hangout" ? "var(--hangout)" : t === "Google" ? "#7A5BA6" : "var(--family)";
+function calRow(c) {
+  const p = stubParts(c.date), editing = S.cal.editing === c.id;
+  const band = bandOf(c.type);
+  const meta = [c.people, c.location].filter(Boolean).join(" · ");
+  return `
+  <li class="crow" style="--band:${band}">
+    <span class="cd"><b>${p.day}</b> ${p.wd}</span>
+    <span class="ct">${c.all_day ? "All day" : when(c).replace(/ (AM|PM)/g, (m) => m.toLowerCase().trim())}</span>
+    <span class="cn"><b>${esc(c.title)}</b>${meta ? `<small> · ${esc(meta)}</small>` : ""}</span>
+    <span class="cb">${c.readonly ? `<small class="ro-tag" title="From Google Calendar. Edit it there.">Google</small>` : `
+      <button class="edit-btn" data-action="cal-edit" data-id="${esc(c.id)}" aria-label="Edit ${esc(c.title)}" aria-expanded="${editing}">${icon("pen")}</button>
+      <button class="edit-btn" data-action="cal-delete" data-id="${esc(c.id)}" aria-label="Delete ${esc(c.title)}"><span aria-hidden="true" style="font-size:22px">×</span></button>`}
+    </span>
+    ${editing ? calEditor(c) : ""}
+  </li>`;
+}
+
+function calGrid(list) {
+  const first = monthStart(), off = first.getDay(), days = new Date(S.cal.y, S.cal.m + 1, 0).getDate();
+  const weeks = Math.ceil((off + days) / 7), today = iso(new Date()), by = {};
+  list.forEach((c) => (by[c.date] = by[c.date] || []).push(c));
+  let cells = "";
+  for (let i = 0; i < weeks * 7; i++) {
+    const d = new Date(S.cal.y, S.cal.m, 1 - off + i), k = iso(d), inMonth = d.getMonth() === S.cal.m, ev = by[k] || [];
+    const chips = ev.slice(0, 3).map((c) => {
+      const band = bandOf(c.type), time = c.all_day ? "" : `<i>${esc(to12(c.start_time).t)}</i> `;
+      if (c.readonly) return `<span class="chip ro" data-tip="${esc(c.id)}" style="--band:${band}" title="${esc(c.title)} (Google Calendar, read-only)">${time}${esc(c.title)}</span>`;
+      return `<button class="chip" draggable="true" data-tip="${esc(c.id)}" data-drag="${esc(c.id)}" style="--band:${band}" data-action="cal-edit" data-id="${esc(c.id)}" title="${esc(c.title)}">${c.all_day ? "" : `<i>${esc(to12(c.start_time).t)}</i> `}${esc(c.title)}</button>`;
+    }).join("");
+    cells += `<div class="gcell ${inMonth ? "" : "out"} ${k === today ? "today" : ""}" data-date="${k}">
+      <button class="gnum" data-action="cal-day" data-id="${k}" aria-label="Add event on ${k}">${d.getDate()}</button>${chips}
+      ${ev.length > 3 ? `<button class="more" data-action="cal-view" data-id="list">+${ev.length - 3} more</button>` : ""}</div>`;
+  }
+  return `<div class="grid" role="grid"><div class="gh">${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((w) => `<span>${w}</span>`).join("")}</div><div class="gb">${cells}</div></div>`;
+}
+
+function panelCalendar() {
+  const c = S.cal, label = monthStart().toLocaleDateString("en-US", { month: "long", year: "numeric" });
+  const list = c.events || [];
+  const g = c.google || [], all = [...list, ...(c.showG ? g : [])].sort((a, b) => (a.date + a.start_time).localeCompare(b.date + b.start_time));
+  const gline = c.gerr ? `<span class="t-warn" role="alert">Google Calendar: ${esc(c.gerr)}</span>`
+    : g.length ? `<label class="check-inline"><input type="checkbox" data-showg ${c.showG ? "checked" : ""}> Show Google Calendar (${g.length}, read-only)</label>`
+    : `Google Calendar not showing? Add its secret iCal address under Settings (gear).`;
+  const view = (v, t) => `<button class="vtab" data-action="cal-view" data-id="${v}" aria-pressed="${c.view === v}">${t}</button>`;
+  // list view edits inline; month view edits in a card next to the event (see renderPop)
+  const editor = c.editing === "new" && c.view === "list" ? `<ul class="clist"><li class="crow" style="--band:var(--family)">${calEditor(blankEvent())}</li></ul>` : "";
+  return `
+    <h2>Notion calendar</h2>
+    <div class="row" style="justify-content:space-between">
+      <div class="row" style="gap:6px">
+        <button class="key" data-action="cal-prev" aria-label="Previous month">‹</button>
+        <b style="font-family:var(--serif);font-size:20px;min-width:9ch;text-align:center" role="status">${label}</b>
+        <button class="key" data-action="cal-next" aria-label="Next month">›</button>
+        <button class="linkish" data-action="cal-today">Today</button>
+      </div>
+      <div class="row" style="gap:8px"><span class="vtabs">${view("month", "Month")}${view("list", "List")}</span>
+        <button class="key dark" data-action="cal-new">+ Add</button></div>
+    </div>
+    <p class="lede" style="margin:10px 0 12px">Saved to your Notion database. <a href="https://calendar.notion.so" target="_blank" rel="noopener">Open Notion Calendar</a> (Notion doesn’t allow it to be embedded here). ${gline}</p>
+    <div class="legend" aria-label="Colour key"><span><i style="--c:var(--work)"></i>Work</span><span><i style="--c:var(--family)"></i>Personal</span><span><i style="--c:var(--hangout)"></i>Hangout</span>${g.length ? `<span><i style="--c:#7A5BA6"></i>Google</span>` : ""}</div>
+    ${c.error ? `<div class="torn" role="alert"><b>Couldn’t load Notion</b>${esc(c.error)}</div>` : ""}
+    ${editor}
+    ${c.loading ? `<div class="typing" role="status"><p>Loading ${label}<span class="cursor" aria-hidden="true"></span></p></div>`
+      : c.view === "month" ? calGrid(all)
+      : !all.length && !c.error ? `<div class="empty"><b>Nothing in ${label}</b>Add an event, or read a schedule on another tab.</div>`
+      : `<ul class="clist">${all.map(calRow).join("")}</ul>`}`;
+}
+function rail() {
+  const r = $("#rail");
+  if (S.view === "settings" || !S.cards.length || !["results", "adding", "added"].includes(S.phase)) { r.hidden = true; return; }
+  r.hidden = false;
+  const n = S.cards.filter((c) => c.on && !c.already && !c.added).length;
+  const skipped = S.cards.filter((c) => c.already).length;
+  if (S.phase === "added") {
+    r.innerHTML = `<div class="rail-in"><p role="status"><b>${plural(S.added, ["event", "events"])} added to Notion.</b><br>They’ll show in Notion Calendar in a few seconds.</p>
+      <button class="key" data-action="restart">Add something else</button></div>`;
+    return;
+  }
+  r.innerHTML = `<div class="rail-in">
+    ${S.addError ? `<p role="alert" style="flex-basis:100%;color:#FFD9CF"><b style="color:#FFD9CF">Couldn’t add to Notion.</b> ${esc(S.addError)}</p>` : ""}
+    <p><b>${n} ticked</b>${skipped ? ` · ${skipped} already in Notion` : ""}</p>
+    <button class="key red big" data-action="add" ${n && S.phase !== "adding" ? "" : "disabled"}>${icon("stamp")}${S.phase === "adding" ? "Adding…" : `Add ${n} to Notion`}</button></div>`;
+}
+
+function slip() {
+  const st = S.status;
+  if (!st) { $("#slip").innerHTML = ""; return; }
+  $("#slip").innerHTML = `<h2>Connections</h2><ul>${st.connections.map((c) => `
+    <li><span>${esc(c.name)}</span><span class="lead" aria-hidden="true"></span>
+      <span>${c.ok ? `<span class="ok">ready</span>` : `<span class="no">not set up</span><span class="fix">${esc(c.fix)}</span>`}</span></li>`).join("")}</ul>
+    <p>Names on rosters: ${esc(st.names || "not set (CALSYNC_MY_NAME)")} · ${esc(st.timezone)}</p>`;
+  $("#demo-tag").innerHTML = st.demo ? `<span class="demo-tag">Demo · nothing is saved</span>` : "";
+}
+
+/* ---------- brass gear ---------- */
+function gearPath(n, ro, ri) {
+  const w = (2 * Math.PI) / n, pt = (r, a) => [(r * Math.cos(a)).toFixed(2), (r * Math.sin(a)).toFixed(2)].join(" ");
+  let d = "", first = "";
+  for (let i = 0; i < n; i++) {
+    const a = i * w, p = [[ri, -.27], [ro, -.15], [ro, .15], [ri, .27]].map(([r, k]) => pt(r, a + k * w));
+    if (!i) first = p[0];
+    d += (i ? `A${ri} ${ri} 0 0 1 ${p[0]}` : `M${p[0]}`) + `L${p[1]}L${p[2]}L${p[3]}`;
+  }
+  return d + `A${ri} ${ri} 0 0 1 ${first}Z`;
+}
+const GEAR_D = gearPath(10, 46, 36);
+const gear = (cls = "") => `<svg class="gear ${cls}" viewBox="-50 -50 100 100" aria-hidden="true">
+  <path d="${GEAR_D}" fill="url(#g-brass)" stroke="#5A3E0E" stroke-width="1.6" stroke-linejoin="round"/>
+  <circle r="26" fill="none" stroke="rgba(255,255,255,.4)" stroke-width="2"/><circle r="24" fill="none" stroke="rgba(60,35,5,.35)" stroke-width="2"/>
+  <circle r="10" fill="url(#g-bore)" stroke="#F4DB94" stroke-width="1.4"/></svg>`;
+
+function about() {
+  const st = S.status || {}, u = S.upd;
+  const line = !u ? "" : u.newer ? `Version ${esc(u.latest)} is available.` : u.error ? "Couldn’t check for updates (offline, or the project page isn’t public yet)." : "You have the newest version.";
+  return `<div class="about"><h3>About calsync</h3>
+    <p><b>Version ${esc(st.version || "?")}.</b> Every line of this program was written by <b>Claude</b>, an AI made by Anthropic, working through Claude Code
+      at one person’s direction. A human tested it on their own computer, but it has not been independently audited.</p>
+    <p>Your keys are stored as plain text in <b>config/calsync.env</b>. Photos and text you submit go to the AI you chose. Nothing else leaves your computer
+      except calls to Notion, Google, Immich, your email server and GitHub (to look for updates).</p>
+    <p>Source code, features, privacy notes and what is untested: <a href="https://github.com/${esc(st.repo || "")}" target="_blank" rel="noopener">github.com/${esc(st.repo || "")}</a>.</p>
+    <div class="row"><button class="key" type="button" data-action="update-check">Check for updates</button><span role="status">${line}</span></div></div>`;
+}
+function panelSettings() {
+  const c = S.cfg, busy = S.cfgBusy;
+  const head = (lede) => `<div class="cfg-head">${gear(busy ? "spin" : "")}<div><h2>Settings</h2><p class="lede">${lede}</p></div></div>`;
+  if (!c) return S.cfgMsg
+    ? head("Couldn’t load your settings.") + `<div class="torn" role="alert"><b>${esc(S.cfgMsg)}</b>If it says “Not found” or “Failed to fetch”, close the black calsync window and start calsync again.</div>
+        <p><button class="key" data-action="settings-retry">Try again</button></p>`
+    : head("Loading…");
+  const picked = c.sections.flatMap((s) => s.fields).find((f) => f.choices)?.value;
+  const input = (f) => f.choices
+    ? `<div class="field"><span class="lab" id="lab-${f.key}">${esc(f.label)}</span><div class="pick" role="radiogroup" aria-labelledby="lab-${f.key}">
+        ${f.choices.map(([v, l]) => `<label><input type="radio" name="${f.key}" value="${v}" data-reader-pick ${f.value === v ? "checked" : ""}><span>${esc(l)}</span></label>`).join("")}</div></div>`
+    : `<div class="field"><label for="cfg-${f.key}">${esc(f.label)}</label>
+        <input id="cfg-${f.key}" name="${f.key}" autocomplete="off" spellcheck="false"
+          ${f.secret ? `type="password" placeholder="${f.set ? "saved" + (f.tail ? " (…" + esc(f.tail) + ")" : "") + ", leave blank to keep" : esc(f.placeholder)}"`
+                     : `type="text" value="${esc(f.value)}" placeholder="${esc(f.placeholder)}"`}></div>`;
+  const sections = c.sections.map((s) => {
+    const t = S.cfgTest[s.test];
+    const gHelp = s.test === "Google Calendar API" ? `<details class="help"><summary>How to get these (about 10 minutes, free)</summary><ol>
+      <li>Go to <a href="https://console.cloud.google.com/projectcreate" target="_blank" rel="noopener">console.cloud.google.com</a> and create a project (any name).</li>
+      <li>Open <a href="https://console.cloud.google.com/apis/library/calendar-json.googleapis.com" target="_blank" rel="noopener">Google Calendar API</a> and press <b>Enable</b>.</li>
+      <li>Open <a href="https://console.cloud.google.com/auth/overview" target="_blank" rel="noopener">Auth platform</a>, press Get started, choose <b>External</b>, and fill in the app name and your email.</li>
+      <li>Under Audience, add your own Gmail as a <b>test user</b>, then press <b>Publish app</b> (In production). Skip this and Google signs you out every 7 days.</li>
+      <li>Open <a href="https://console.cloud.google.com/auth/clients" target="_blank" rel="noopener">Clients</a>, press Create client, type <b>Desktop app</b>, and copy the <b>client ID</b> and <b>secret</b> into the boxes below.</li>
+      <li>Press <b>Connect Google account</b>. Google warns the app is unverified: choose Advanced, then continue (it is your own app).</li></ol>
+      <p>Easier: on the client’s page press <b>Download JSON</b>, then load that file here and the two boxes fill themselves.
+        <span class="key" style="min-height:40px">Load client JSON<input type="file" accept=".json,application/json" data-gjson aria-label="Load the downloaded client JSON file"></span></p></details>` : "";
+    return `<fieldset class="cfg-sec" ${s.reader ? `data-reader="${s.reader}" ${s.reader === picked ? "" : "hidden"}` : ""}><legend>${esc(s.title)}</legend>${gHelp}
+      ${s.fields.map(input).join("")}
+      ${s.test === "Google Calendar API" ? `<div class="row"><button class="key" type="button" data-action="google-connect" ${busy ? "disabled" : ""}>Connect Google account</button>
+        <small style="max-width:42ch">Opens Google to sign in. Save the ID and secret first (this button saves them). Then press Save &amp; test.</small></div>` : ""}
+      ${s.test ? `<div class="row"><button class="key" type="button" data-action="settings-test" data-name="${esc(s.test)}" ${busy ? "disabled" : ""}>Save &amp; test</button>
+        <span class="cfg-result ${t && t !== "busy" ? (t.ok ? "ok" : "no") : ""}" role="status">${t === "busy" ? "Testing…" : t ? esc(t.message) : ""}</span></div>` : ""}
+    </fieldset>`;
+  }).join("");
+  return head(`Saved on this drive in <b>config/calsync.env</b>, as plain text. Keys are never shown again; leave a key blank to keep the saved one.`) +
+    (c.demo ? `<p class="lede"><b>Demo mode is on.</b> Nothing is sent or saved until you restart calsync without <b>--demo</b>.</p>` : "") +
+    `<form class="cfg" data-cfg>${sections}
+      <div class="cfg-foot row"><button class="key dark big" type="submit" ${busy ? "disabled" : ""}>${busy === "save" ? "Saving…" : "Save"}</button>
+        <button class="linkish" type="button" data-action="settings">Done</button>
+        <span class="cfg-result ${S.cfgErr ? "no" : "ok"}" role="status">${esc(S.cfgMsg)}</span></div></form>` + about();
+}
+
+function updBanner() {
+  const b = $("#upd"), u = S.upd;
+  if (!u || !u.newer || S.updDismissed) { b.hidden = true; return; }
+  b.hidden = false;
+  b.innerHTML = S.updBusy ? `<span class="grow"><b>Updating…</b> calsync will restart by itself.</span>`
+    : `<span class="grow"><b>calsync ${esc(u.latest)} is available</b> (you have ${esc(u.current)}). <a href="${esc(u.url)}" target="_blank" rel="noopener">What’s new</a></span>
+       ${u.can_install ? `<button class="key" data-action="update-install">Update now</button>` : ""}<button class="linkish" data-action="update-dismiss">Later</button>
+       ${S.updMsg ? `<span class="t-warn" role="alert">${esc(S.updMsg)}</span>` : ""}`;
+}
+async function updCheck(fresh) {
+  try { S.upd = await api("/api/update/check", { fresh: !!fresh }); } catch (e) { S.upd = { error: e.message, newer: false }; }
+  updBanner(); if (S.view === "settings") render();
+}
+async function updInstall() {
+  S.updBusy = true; S.updMsg = ""; updBanner();
+  try {
+    const r = await api("/api/update/install");
+    if (!r.ok) { S.updBusy = false; S.updMsg = r.message; updBanner(); return; }
+    if (!r.restart) { S.updBusy = false; S.upd.newer = false; $("#upd").hidden = false; $("#upd").innerHTML = `<span class="grow"><b>${esc(r.message)}</b></span>`; return; }
+    for (let i = 0; i < 40; i++) {                       // wait for the new copy to come back, then reload
+      await new Promise((ok) => setTimeout(ok, 1500));
+      try { await api("/api/status"); location.reload(); return; } catch (e) { /* still restarting */ }
+    }
+    S.updBusy = false; S.updMsg = "It didn’t come back. Open calsync again from its icon."; updBanner();
+  } catch (e) { S.updBusy = false; S.updMsg = e.message; updBanner(); }
+}
+
+function render() {
+  const cfg = S.view === "settings";
+  $(".tabs").hidden = cfg;
+  renderTabs();
+  if (cfg) { $("#sheet").removeAttribute("aria-labelledby"); $("#sheet").setAttribute("aria-label", "Settings"); }
+  $("#gear").setAttribute("aria-expanded", cfg);
+  const calendar = !cfg && S.mode === "calendar";
+  const panel = cfg ? panelSettings() : calendar ? panelCalendar() : S.mode === "work" ? panelWork() : S.mode === "family" ? panelFamily()
+    : S.mode === "describe" ? panelDescribe() : panelHangouts();
+  $("#sheet").innerHTML = cfg || calendar ? panel : panel + tray() + status() + results();
+  rail(); slip(); renderPop();
+}
+
+function loadCfg() {
+  api("/api/settings").then((c) => { S.cfg = c; S.cfgMsg = ""; render(); })
+    .catch((e) => { S.cfgMsg = e.message; S.cfgErr = true; render(); });
+}
+
+async function saveCfg(test) {
+  const values = Object.fromEntries(new FormData($("[data-cfg]")));
+  S.cfg.sections.forEach((s) => s.fields.forEach((f) => { if (!f.secret) f.value = values[f.key] ?? f.value; }));
+  S.cfgBusy = test || "save"; S.cfgMsg = ""; S.cfgErr = false; render();
+  try {
+    S.cfg = await api("/api/settings/save", { values });
+    S.status = await api("/api/status");
+    if (test) {
+      S.cfgTest[test] = "busy"; render();
+      S.cfgTest[test] = await api("/api/settings/test", { name: test });
+    } else S.cfgMsg = "Saved.";
+  } catch (e) { S.cfgMsg = e.message; S.cfgErr = true; if (test) delete S.cfgTest[test]; }
+  S.cfgBusy = ""; render();
+  if (test) $(`[data-name="${test}"]`)?.focus();
+}
+
+/* ---------- actions ---------- */
+let timer = null;
+async function read(body) {
+  S.phase = "reading"; S.cards = []; S.error = ""; S.message = ""; S.editing = null; S.started = Date.now();
+  render();
+  clearInterval(timer);
+  timer = setInterval(() => { const el = $("#elapsed"); if (el) el.textContent = Math.round((Date.now() - S.started) / 1000); }, 1000);
+  try {
+    const data = await api("/api/read", { mode: S.mode, only_me: S.onlyMe, ...body });
+    S.cards = data.cards.map((c) => ({ ...c, on: !c.already, added: false }));
+    S.message = data.message || "";
+    S.phase = "results";
+  } catch (e) { S.phase = "error"; S.error = e.message; }
+  clearInterval(timer);
+  render();
+  const head = $(".results-head h3, .torn b");
+  if (head) { head.setAttribute("tabindex", "-1"); head.focus({ preventScroll: true }); head.scrollIntoView({ behavior: "smooth", block: "start" }); }
+}
+
+async function add() {
+  const picked = S.cards.filter((c) => c.on && !c.already && !c.added);
+  S.phase = "adding"; render();
+  try {
+    const { added } = await api("/api/add", { cards: picked });
+    const set = new Set(added);
+    S.cards.forEach((c) => { if (set.has(c.key)) { c.added = true; c.on = false; } });
+    S.added = added.length; S.phase = "added";
+    S.addError = "";
+  } catch (e) { S.phase = "results"; S.addError = e.message + " Anything not stamped “Added” was not saved, so you can try again."; }
+  render();
+}
+
+document.addEventListener("click", (ev) => {
+  if (S.cal.editing && $("#pop") && !ev.target.closest("#pop, .chip, .gnum, [data-action='cal-new']")) { S.cal.editing = null; S.cal.formError = ""; render(); }
+  const tab = ev.target.closest(".tab");
+  if (tab && S.phase !== "reading" && S.phase !== "adding") {
+    S.mode = tab.dataset.mode; store("calsync-mode", S.mode);
+    S.files = []; S.cards = []; S.phase = "idle"; S.editing = null; render();
+    if (S.mode === "calendar") calLoad();
+    return;
+  }
+  const b = ev.target.closest("[data-action]");
+  if (!b) return;
+  const a = b.dataset.action;
+  if (a.startsWith("cal-")) return calAction(a, b.dataset.id);
+  if (a === "sub") {
+    if (S.phase === "reading" || S.phase === "adding") return;
+    S.mode = b.dataset.id; store("calsync-mode", S.mode); S.files = []; S.cards = []; S.phase = "idle"; render(); return;
+  }
+  if (a === "settings") {
+    S.view = S.view === "settings" ? "main" : "settings"; S.cfgMsg = "";
+    render();
+    if (S.view === "settings") loadCfg(); else $("#gear").focus();
+  }
+  else if (a === "settings-retry") { S.cfgMsg = ""; render(); loadCfg(); }
+  else if (a === "settings-test") saveCfg(b.dataset.name);
+  else if (a === "google-connect") googleConnect();
+  else if (a === "update-check") { S.updDismissed = false; updCheck(true); }
+  else if (a === "update-install") updInstall();
+  else if (a === "update-dismiss") { S.updDismissed = true; updBanner(); }
+  else if (a === "remove") { S.files.splice(+b.dataset.i, 1); render(); }
+  else if (a === "clear") { S.files = []; render(); }
+  else if (a === "read") read({ files: S.files.map(({ name, data }) => ({ name, data })) });
+  else if (a === "email") read({ days: S.days });
+  else if (a === "describe") {
+    S.text = ($("#desc")?.value || S.text).trim();
+    if (!S.text) { S.phase = "error"; S.error = "Type what is happening first."; render(); return; }
+    read({ text: S.text });
+  }
+  else if (a === "describe-clear") { S.text = ""; S.cards = []; S.phase = "idle"; render(); }
+  else if (a === "hangouts") {
+    if (!S.since) { S.phase = "error"; S.error = "Pick a “From” date first."; render(); return; }
+    read({ since: S.since, until: S.until || S.status?.today });
+  }
+  else if (a === "edit") { S.editing = S.editing === b.dataset.key ? null : b.dataset.key; render(); const f = $(`[data-editor="${CSS.escape(b.dataset.key)}"] input`); if (f) f.focus(); }
+  else if (a === "cancel-edit") { S.editing = null; render(); }
+  else if (a === "all" || a === "none") { S.cards.forEach((c) => { if (!c.already && !c.added) c.on = a === "all"; }); render(); }
+  else if (a === "add") add();
+  else if (a === "restart") { S.files = []; S.cards = []; S.phase = "idle"; render(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+});
+
+async function calAction(a, id) {
+  const c = S.cal; c.draft = null;
+  if (a === "cal-prev" || a === "cal-next") { c.m += a === "cal-next" ? 1 : -1; c.y += Math.floor(c.m / 12); c.m = (c.m + 12) % 12; calLoad(); }
+  else if (a === "cal-today") { c.y = new Date().getFullYear(); c.m = new Date().getMonth(); calLoad(); }
+  else if (a === "cal-view") { c.view = id; store("calsync-calview", id); c.editing = null; render(); }
+  else if (a === "cal-day") { c.newDate = id; c.editing = "new"; c.formError = ""; render(); $("#c-title")?.focus(); }
+  else if (a === "cal-new") { c.newDate = ""; c.editing = "new"; c.formError = ""; render(); $("#c-title")?.focus(); }
+  else if (a === "cal-edit") { c.editing = c.editing === id ? null : id; c.formError = ""; render(); $("#c-title")?.focus(); }
+  else if (a === "cal-cancel") { c.editing = null; render(); }
+  else if (a === "cal-delete") {
+    const ev = findEv(id);
+    if (!confirm(`Delete “${ev.title}”? It moves to Notion’s trash, where you can restore it.`)) return;
+    try { await api("/api/calendar/delete", { id }); calLoad(); }
+    catch (e) { c.error = e.message; render(); }
+  }
+}
+
+/* Drag an event onto another day to move it. It shows there at once, then saves to Notion. */
+const addDays = (s, n) => { const d = new Date(s + "T12:00:00"); d.setDate(d.getDate() + n); return iso(d); };
+document.addEventListener("dragstart", (ev) => {
+  const chip = ev.target.closest?.("[data-drag]");
+  if (!chip) return;
+  ev.dataTransfer.setData("text/plain", chip.dataset.drag); ev.dataTransfer.effectAllowed = "move";
+  chip.classList.add("dragging");
+});
+document.addEventListener("dragend", () => document.querySelectorAll(".dragging,.over").forEach((e) => e.classList.remove("dragging", "over")));
+document.addEventListener("dragover", (ev) => {
+  const cell = ev.target.closest?.(".gcell");
+  if (!cell) return;
+  ev.preventDefault();
+  document.querySelectorAll(".over").forEach((e) => e !== cell && e.classList.remove("over"));
+  cell.classList.add("over");
+});
+document.addEventListener("drop", async (ev) => {
+  const cell = ev.target.closest?.(".gcell");
+  if (!cell) return;
+  ev.preventDefault();
+  const id = ev.dataTransfer.getData("text/plain"), c = S.cal, e = findEv(id);
+  if (!e || e.readonly || e.date === cell.dataset.date) { render(); return; }
+  const before = { date: e.date, end_date: e.end_date };
+  const delta = Math.round((Date.parse(cell.dataset.date) - Date.parse(e.date)) / 86400000);
+  e.date = cell.dataset.date; if (e.end_date) e.end_date = addDays(e.end_date, delta);
+  c.error = ""; render();
+  try { await api("/api/calendar/save", { card: e }); calLoad(true); }
+  catch (err) { Object.assign(e, before); c.error = "Couldn’t move it: " + err.message; render(); }
+});
+
+async function googleConnect() {
+  await saveCfg();
+  if (S.cfgErr) return;
+  try { const { url } = await api("/api/google/connect"); window.open(url, "_blank"); S.cfgMsg = "Finish signing in on the Google page that opened, then press Save & test."; }
+  catch (e) { S.cfgMsg = e.message; S.cfgErr = true; }
+  render();
+}
+
+/* ---------- Month view: hover card and click-to-edit card ---------- */
+function placeNear(el, anchor) {
+  const r = anchor.getBoundingClientRect(), w = el.offsetWidth, h = el.offsetHeight;
+  el.style.left = Math.min(Math.max(8, r.left), innerWidth - w - 8) + "px";
+  let top = r.bottom + 6;
+  if (top + h > innerHeight - 8) top = Math.max(8, r.top - h - 6);
+  el.style.top = top + "px";
+}
+function popAnchor() {
+  const c = S.cal;
+  if (c.editing === "new") return c.newDate ? document.querySelector(`.gcell[data-date="${c.newDate}"]`) : document.querySelector('[data-action="cal-new"]');
+  return document.querySelector(`.chip[data-tip="${CSS.escape(c.editing)}"]`);
+}
+function renderPop() {
+  const c = S.cal; let pop = $("#pop");
+  const ev = c.editing === "new" ? blankEvent() : c.editing ? findEv(c.editing) : null;
+  const want = ev && S.mode === "calendar" && S.view === "main" && c.view === "month" && popAnchor();
+  if (!want) { pop?.remove(); return; }
+  if (!pop) { pop = document.createElement("div"); pop.id = "pop"; pop.className = "pop"; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", "Edit event"); document.body.appendChild(pop); }
+  $("#tip")?.remove();
+  pop.innerHTML = calEditor(ev); placeNear(pop, popAnchor());
+}
+document.addEventListener("mouseover", (ev) => {
+  const chip = ev.target.closest?.("[data-tip]");
+  $("#tip")?.remove();
+  if (!chip || $("#pop")) return;
+  const c = findEv(chip.dataset.tip); if (!c) return;
+  const tip = document.createElement("div"); tip.id = "tip"; tip.className = "tip";
+  tip.innerHTML = `<b>${esc(c.title)}</b><div>${esc(stubParts(c.date).wd + " " + stubParts(c.date).mon.charAt(0) + stubParts(c.date).mon.slice(1).toLowerCase() + " " + stubParts(c.date).day)} · ${esc(when(c))}</div>
+    ${[c.people, c.location].filter(Boolean).length ? `<div>${esc([c.people, c.location].filter(Boolean).join(" · "))}</div>` : ""}
+    ${c.notes ? `<div class="n">${esc(c.notes)}</div>` : ""}<div class="h">${c.readonly ? "Read-only" : c.type === "Google" ? "Google · click to edit, drag to move" : "Click to edit, drag to move"}</div>`;
+  document.body.appendChild(tip); placeNear(tip, chip);
+});
+document.addEventListener("mouseout", (ev) => { if (ev.target.closest?.("[data-tip]")) $("#tip")?.remove(); });
+document.addEventListener("keydown", (ev) => { if (ev.key === "Escape" && S.cal.editing) { S.cal.editing = null; render(); } });
+window.addEventListener("scroll", () => { const p = $("#pop"), a = p && popAnchor(); if (a) placeNear(p, a); $("#tip")?.remove(); }, true);
+window.addEventListener("resize", () => { const p = $("#pop"), a = p && popAnchor(); if (a) placeNear(p, a); });
+
+async function calSave(form) {
+  const fd = new FormData(form), id = form.dataset.caleditor === "new" ? "" : form.dataset.caleditor;
+  const card = Object.fromEntries(fd);
+  card.id = id; card.all_day = fd.get("all_day") === "on" || !fd.get("start_time");
+  if (card.all_day) { card.start_time = ""; card.end_time = ""; }
+  S.cal.saving = true; S.cal.formError = ""; render();
+  try { await api("/api/calendar/save", { card }); S.cal.saving = false; S.cal.draft = null; await calLoad(); }
+  catch (e) { S.cal.saving = false; S.cal.formError = e.message; S.cal.editing = id || "new"; S.cal.draft = card; render(); }
+}
+
+document.addEventListener("keydown", (ev) => {
+  const tab = ev.target.closest && ev.target.closest(".tab");
+  if (!tab || !["ArrowLeft", "ArrowRight"].includes(ev.key)) return;
+  const tabs = [...document.querySelectorAll(".tab")];
+  const next = tabs[(tabs.indexOf(tab) + (ev.key === "ArrowRight" ? 1 : tabs.length - 1)) % tabs.length];
+  next.focus(); next.click();
+});
+
+document.addEventListener("change", async (ev) => {
+  const t = ev.target;
+  // In an edit form, "All day" and the time boxes must agree, or typed times are ignored.
+  const form = t.closest?.("[data-editor],[data-caleditor]");
+  if (form && ["start_time", "end_time", "all_day"].includes(t.name)) {
+    const day = form.elements.all_day, st = form.elements.start_time, en = form.elements.end_time;
+    if (t.name === "all_day" && day.checked) { st.value = ""; en.value = ""; }
+    else if (t.name === "all_day" && !st.value) { st.value = "09:00"; en.value = "10:00"; }
+    else if (t.name !== "all_day" && st.value) day.checked = false;
+    return;
+  }
+  if (t.matches("[data-files]")) {
+    const list = [...t.files];
+    t.value = "";
+    for (const f of list) S.files.push(await prepare(f));
+    if (S.phase === "error") S.phase = "idle";
+    render();
+  } else if (t.matches("[data-gjson]")) {
+    try {
+      const j = JSON.parse(await t.files[0].text()), o = j.installed || j.web || j;
+      if (!o.client_id || !o.client_secret) throw new Error("no client_id or client_secret in it");
+      $("#cfg-GOOGLE_CLIENT_ID").value = o.client_id; $("#cfg-GOOGLE_CLIENT_SECRET").value = o.client_secret;
+      S.cfgMsg = "Filled in. Now press Connect Google account."; S.cfgErr = false;
+    } catch (e) { S.cfgMsg = "That file isn’t a Google client JSON: " + e.message; S.cfgErr = true; }
+    t.value = ""; const m = document.querySelector(".cfg-foot .cfg-result"); if (m) { m.textContent = S.cfgMsg; m.className = "cfg-result " + (S.cfgErr ? "no" : "ok"); }
+  } else if (t.matches("[data-showg]")) { S.cal.showG = t.checked; store("calsync-showg", t.checked ? "1" : "0"); render();
+  } else if (t.matches("[data-reader-pick]")) {
+    document.querySelectorAll("[data-reader]").forEach((el) => { el.hidden = el.dataset.reader !== t.value; });
+  } else if (t.matches("[data-toggle]")) {
+    const c = S.cards.find((x) => x.key === t.dataset.toggle);
+    c.on = t.checked; render();
+    const again = $(`[data-toggle="${CSS.escape(c.key)}"]`); if (again) again.focus();
+  } else if (t.matches("[data-onlyme]")) { S.onlyMe = t.checked; store("calsync-onlyme", S.onlyMe ? "1" : "0"); }
+  else if (t.matches("[data-text]")) S.text = t.value;
+  else if (t.matches("[data-days]")) S.days = +t.value;
+  else if (t.matches("[data-since]")) S.since = t.value;
+  else if (t.matches("[data-until]")) S.until = t.value;
+});
+
+document.addEventListener("submit", (ev) => {
+  if (ev.target.matches("[data-cfg]")) { ev.preventDefault(); saveCfg(); return; }
+  if (ev.target.matches("[data-caleditor]")) { ev.preventDefault(); calSave(ev.target); return; }
+  const form = ev.target.closest("[data-editor]");
+  if (!form) return;
+  ev.preventDefault();
+  const c = S.cards.find((x) => x.key === form.dataset.editor);
+  const fd = new FormData(form);
+  c.title = fd.get("title").trim() || c.title;
+  c.date = fd.get("date") || c.date;
+  c.end_date = c.date;
+  c.all_day = fd.get("all_day") === "on" || !fd.get("start_time");
+  c.start_time = c.all_day ? "" : fd.get("start_time");
+  c.end_time = c.all_day ? "" : fd.get("end_time");
+  c.notes = fd.get("notes").trim();
+  c.unsure = false; c.on = true; S.editing = null;
+  render();
+});
+
+$("#gear").innerHTML = gear();
+$("#today").textContent =new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+render();
+if (S.mode === "calendar") calLoad();
+updCheck();
+api("/api/status").then((st) => { S.status = st; render(); }).catch((e) => { S.phase = "error"; S.error = e.message; render(); });
+</script>
+</body>
+</html>

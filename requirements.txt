@@ -1,0 +1,7 @@
+# Packages calsync uses. Python 3.10 or newer.
+anthropic>=2.0
+pydantic>=2.10
+pillow>=11
+tzdata>=2025.1
+icalendar>=6.0
+recurring-ical-events>=3.0

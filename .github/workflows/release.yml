@@ -1,0 +1,26 @@
+name: release
+# Push a tag like v1.1.0 and this builds calsync.exe from the public source, so what you download
+# is provably built from the code you can read. It attaches calsync.exe and SHA256SUMS.
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: write
+jobs:
+  windows-exe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.13" }
+      - name: Tag must match app/version.py
+        shell: bash
+        run: |
+          v=$(python -c "import re;print(re.search(r'\"(.+?)\"', open('app/version.py').read()).group(1))")
+          test "v$v" = "${GITHUB_REF_NAME}" || { echo "tag ${GITHUB_REF_NAME} != version v$v"; exit 1; }
+      - run: .\build.bat
+        shell: cmd
+      - name: Publish
+        shell: bash
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: gh release create "${GITHUB_REF_NAME}" calsync.exe SHA256SUMS --generate-notes --title "calsync ${GITHUB_REF_NAME}"
