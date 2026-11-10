@@ -78,7 +78,7 @@ Open the link it prints on any device signed in to your Tailscale network. On iP
 - **`calsync.log`** (the `.exe`'s log) contains the link with your access code. Don't share it.
 - **Google sign-in** asks for the `calendar` permission (read and edit your events). calsync stores only a refresh token in the settings file. Revoke it any time at <https://myaccount.google.com/permissions>.
 - **Updates** download only from this project's own GitHub release, and the `.exe` must match the `SHA256SUMS` published with it. That catches a corrupted download. It does not protect against someone taking over the GitHub account, so keep two-factor on that account if you publish a fork.
-- Report a problem privately: see [SECURITY.md](SECURITY.md).
+- Full policy: [PRIVACY.md](PRIVACY.md). Report a problem privately: see [SECURITY.md](SECURITY.md).
 
 ## What is not tested
 
