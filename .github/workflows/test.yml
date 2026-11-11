@@ -1,6 +1,21 @@
 name: tests
 on: [push, pull_request]
 jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compose files are valid
+        run: docker compose -f docker-compose.yml config -q && docker compose -f docker-compose.yml -f docker-compose.immich.yml config -q
+      - name: Build the image and start it (demo mode, no keys)
+        run: |
+          docker build -t calsync:ci .
+          docker run -d --name cs -p 127.0.0.1:8766:8766 calsync:ci
+          for i in $(seq 1 30); do curl -fsS http://127.0.0.1:8766/ >/dev/null && break; sleep 1; done
+          curl -fsS http://127.0.0.1:8766/ | grep -q "<title>calsync"
+          # the API must refuse a request that has no access code
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST http://127.0.0.1:8766/api/status)" = "403"
+          docker logs cs
   test:
     strategy:
       matrix:

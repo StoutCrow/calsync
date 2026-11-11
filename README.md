@@ -47,7 +47,14 @@ python launcher.py --phone    # also reachable by phones on your Wi-Fi
 ```
 Python 3.10 or newer. The `Start calsync (…)` scripts do the same and install the packages into a `lib/` folder next to the program.
 
-### On a home server with Tailscale (Linux)
+### On a Windows home server with Docker and Tailscale
+Needs [Docker Desktop](https://www.docker.com/products/docker-desktop) and [Tailscale](https://tailscale.com/download), both signed in and running, on the machine that will host calsync (the one running Immich, if you use it).
+
+Double-click `Set up calsync with Docker (Windows).bat` (or run `setup-docker-windows.ps1`). It downloads calsync into `%USERPROFILE%\calsync-docker`, builds and starts the container, joins Immich's Docker network (`immich_default`) when it exists so Immich is reachable as `http://immich_server:2283`, and shares calsync **only on your Tailscale network** with `tailscale serve`. It prints a link; open it on any device signed in to your Tailscale network. Run it again any time to update; your settings stay.
+
+By hand: `docker compose up -d --build` (add `-f docker-compose.yml -f docker-compose.immich.yml` to join Immich's network). The container publishes only `127.0.0.1:8766`; Tailscale is the way in from other devices. Settings live in `config/` next to the compose file. Docker Desktop on Windows normally starts when you sign in, so calsync is available whenever that machine is on and signed in.
+
+### On a Linux home server with Tailscale (no Docker)
 `install-server.sh` sets calsync up as a background service that starts at boot, finds Immich if it runs on that machine, and shares calsync **only on your Tailscale network** over https with `tailscale serve`.
 
 - From Windows: double-click `Deploy to home server (Windows).bat`, give it `user@server-name` once.
@@ -85,7 +92,7 @@ Open the link it prints on any device signed in to your Tailscale network. On iP
 Honesty list. These were written but **never run against the real thing**:
 
 - **Google sign-in and editing Google events** (needs a Google account and Cloud project; the code and its error messages are untested live).
-- **`install-server.sh` and the Windows deploy script** on a real server, and `tailscale serve` (no Linux machine was available while writing them; only a syntax check in CI).
+- **The home-server setups on a real machine:** `setup-docker-windows.ps1`, `install-server.sh`, the Windows deploy script, and `tailscale serve` (no server was reachable while writing them). CI does check that the Docker image builds, starts, and refuses requests without the access code, and that the shell script parses.
 - **The Claude reader** (model name and API options are unconfirmed), **the Local/Ollama reader**, and **PDF reading**.
 - **A real Immich "Past hangouts" run.**
 - **Reading real schedule emails** (the login works; extraction from real emails was not run).

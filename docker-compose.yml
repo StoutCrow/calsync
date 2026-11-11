@@ -1,0 +1,17 @@
+# calsync on a home server. Start:   docker compose up -d --build
+# To reach Immich by name, add the second file:
+#   docker compose -f docker-compose.yml -f docker-compose.immich.yml up -d --build
+# (setup-docker-windows.ps1 does all of this for you.)
+services:
+  calsync:
+    build: .
+    image: calsync:local
+    container_name: calsync
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8766:8766"      # only this machine; Tailscale (tailscale serve) is the way in from elsewhere
+    volumes:
+      - ./config:/app/config       # your settings and keys stay on this machine
+    environment:
+      CALSYNC_PORT: "8766"
+      CALSYNC_UPDATE_CHECK: "off"  # a container updates by rebuilding: run the setup script again

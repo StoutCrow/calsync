@@ -1,0 +1,12 @@
+# Optional add-on: puts calsync on Immich's Docker network so it can use http://immich_server:2283
+# Change the name below if your Immich network is called something else (docker network ls).
+services:
+  calsync:
+    networks:
+      - default
+      - immich
+
+networks:
+  immich:
+    external: true
+    name: immich_default
